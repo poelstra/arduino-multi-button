@@ -1,0 +1,2 @@
+PinButton	KEYWORD1
+MultiButton	KEYWORD1
