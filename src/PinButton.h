@@ -53,7 +53,23 @@ class PinButton : public MultiButton {
     PinButton(int pin) : MultiButton(), _pin(pin) {
       pinMode(pin, INPUT_PULLUP);
     }
-
+    
+    /**
+     * Construct a new PinButton using a switch. 
+     * Initialize the input according to how the button is connected to.
+     * INPUT - a switch is conected between Arduino pin and VDD with external resistor.
+     * INPUT_PULLUP - a switch is conected between Arduino pin and ground.
+     * 
+     @param pin {int} Arduino pin to use
+     @param pinType {int} Set pin type (INPUT or INPUT_PULLUP)
+     */
+    PinButton(int pin, int pinType) : MultiButton(), _pin(pin) {
+      pinMode(pin, pinType);
+      if(INPUT == pinType) {
+        _pinActiveLevel = HIGH;
+      }
+    }
+    
     /**
      * Read current hardware button state and decode into
      * stable state using isClick() etc.
@@ -61,9 +77,10 @@ class PinButton : public MultiButton {
      * It's recommended to call this method in e.g. loop().
      */
     void update() {
-      MultiButton::update(digitalRead(_pin) == 0);
+      MultiButton::update(digitalRead(_pin) == _pinActiveLevel);
     }
 
   private:
     int _pin;
+    bool _pinActiveLevel = LOW;
 };
