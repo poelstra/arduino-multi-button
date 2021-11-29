@@ -82,5 +82,5 @@ class PinButton : public MultiButton {
 
   private:
     int _pin;
-    bool _pinActiveLevel = LOW;
+    int _pinActiveLevel = LOW;
 };
