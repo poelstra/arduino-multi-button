@@ -14,7 +14,7 @@
 #define DOUBLE_CLICK_LED_PIN  (10)
 #define LONG_CLICK_LED_PIN    (11)
 
-// Create a new button object, listening on pin 5.
+// Create a new button object, listening on pin 7.
 // You can have as many buttons as you like.
 PinButton myButton(BUTTON_PIN, INPUT);
 
