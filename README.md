@@ -93,6 +93,9 @@ All classes and public methods are documented in the source code of the library:
 
 # Changelog
 
+1.1.0 (2021-11-30):
+- Support switch to Vcc with pull-down resistor (thanks to @BerranRemzi).
+
 1.0.0 (2017-01-16):
 - Initial version.
 
