@@ -51,9 +51,13 @@ class PinButton : public MultiButton {
      * @param pin {int} Arduino pin to use
      */
     PinButton(int pin) : MultiButton(), _pin(pin) {
+#ifdef ARDUINO_ARCH_STM32
+      pinMode(pin, (WiringPinMode)INPUT_PULLUP);
+#else
       pinMode(pin, INPUT_PULLUP);
+#endif
     }
-    
+
     /**
      * Construct a new PinButton using a switch. 
      * Initialize the input according to how the button is connected to.
@@ -64,12 +68,16 @@ class PinButton : public MultiButton {
      @param pinType {int} Set pin type (INPUT or INPUT_PULLUP)
      */
     PinButton(int pin, int pinType) : MultiButton(), _pin(pin) {
+#ifdef ARDUINO_ARCH_STM32
+      pinMode(pin, (WiringPinMode)pinType);
+#else
       pinMode(pin, pinType);
+#endif
       if(INPUT == pinType) {
         _pinActiveLevel = HIGH;
       }
     }
-    
+
     /**
      * Read current hardware button state and decode into
      * stable state using isClick() etc.
