@@ -93,6 +93,9 @@ All classes and public methods are documented in the source code of the library:
 
 # Changelog
 
+1.2.0 (2022-01-18):
+- Support STM32duino boards (thanks to @mixaz).
+
 1.1.0 (2021-11-30):
 - Support switch to Vcc with pull-down resistor (thanks to @BerranRemzi).
 
