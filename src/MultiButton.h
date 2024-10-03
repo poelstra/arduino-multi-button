@@ -44,6 +44,15 @@
  * }
  * ```
  */
+
+struct MultiButtonConfig {
+    int debounceDecay;     // ms
+    int singleClickDelay;  // ms
+    int longClickDelay;    // ms
+};
+
+const static MultiButtonConfig DEFAULT_MULTIBUTTON_CONFIG = { 20, 250, 300 };
+
 class MultiButton {
   public:
     /**
@@ -52,8 +61,13 @@ class MultiButton {
      * See class doc for usage and example.
      */
     MultiButton() : _lastTransition(millis()), _state(StateIdle), _new(false) {
+        _configPtr = &DEFAULT_MULTIBUTTON_CONFIG;
     };
 
+    MultiButton(const MultiButtonConfig* configuration)
+        : _lastTransition(millis()), _state(StateIdle), _new(false) {
+        _configPtr = configuration;
+    };
     /**
      * Decode hardware button state into clean clicks (single, double, long).
      * The state of isClick() etc is valid until the next call to update().
@@ -147,9 +161,7 @@ class MultiButton {
     }
 
   private:
-    static const int DEBOUNCE_DELAY    =  20; // ms
-    static const int SINGLECLICK_DELAY = 250; // ms
-    static const int LONGCLICK_DELAY   = 300; // ms
+    const MultiButtonConfig* _configPtr;
 
     /**
      * Note:
@@ -236,7 +248,7 @@ class MultiButton {
       if (!pressed) {
         return StateIdle;
       }
-      if (diff >= DEBOUNCE_DELAY) {
+      if (diff >= _configPtr->debounceDecay) {
         // Still pressed after debounce delay: real 'press'
         return StatePressed;
       }
@@ -251,7 +263,7 @@ class MultiButton {
         return StateClickUp;
       }
       // If pressed, keep waiting to see if it's a long click
-      if (diff >= LONGCLICK_DELAY) {
+      if (diff >= _configPtr->longClickDelay) {
         return StateLongClick;
       }
       return StatePressed;
@@ -267,7 +279,7 @@ class MultiButton {
       if (pressed) {
         return StateDoubleClickDebounce;
       }
-      if (diff >= SINGLECLICK_DELAY) {
+      if (diff >= _configPtr->singleClickDelay) {
         return StateSingleClick;
       }
       return StateClickIdle;
@@ -283,7 +295,7 @@ class MultiButton {
       if (!pressed) {
         return StateClickIdle;
       }
-      if (diff >= DEBOUNCE_DELAY) {
+      if (diff >= _configPtr->debounceDecay) {
         return StateDoubleClick;
       }
       return StateDoubleClickDebounce;

@@ -56,7 +56,7 @@ class PinButton : public MultiButton {
 #else
       pinMode(pin, INPUT_PULLUP);
 #endif
-    }
+    };
 
     /**
      * Construct a new PinButton using a switch. 
@@ -76,7 +76,19 @@ class PinButton : public MultiButton {
       if(INPUT == pinType) {
         _pinActiveLevel = HIGH;
       }
-    }
+    };
+
+    PinButton(int pin, int pinType, const MultiButtonConfig* configuration)
+        : MultiButton(configuration), _pin(pin) {
+#ifdef ARDUINO_ARCH_STM32
+      pinMode(pin, (WiringPinMode)pinType);
+#else
+      pinMode(pin, pinType);
+#endif
+      if(INPUT == pinType) {
+        _pinActiveLevel = HIGH;
+      }
+    };
 
     /**
      * Read current hardware button state and decode into
