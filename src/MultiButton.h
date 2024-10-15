@@ -37,7 +37,7 @@ const static MultiButtonConfig DEFAULT_MULTIBUTTON_CONFIG = { 20, 250, 300 };
  *
  * Usage example:
  * ```cpp
- * Button btn1();
+ * MultiButton btn1;
  *
  * void setup() {
  *   Serial.begin(9600);
