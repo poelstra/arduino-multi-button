@@ -93,6 +93,9 @@ All classes and public methods are documented in the source code of the library:
 
 # Changelog
 
+1.3.0 (2024-10-15):
+- Support debounce/delay customization (thanks to @jakovkolesnik).
+
 1.2.0 (2022-01-18):
 - Support STM32duino boards (thanks to @mixaz).
 
