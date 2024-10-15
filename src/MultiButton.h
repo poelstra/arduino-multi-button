@@ -21,6 +21,14 @@
 
 #include <Arduino.h>
 
+struct MultiButtonConfig {
+  int debounceDecay;     // ms
+  int singleClickDelay;  // ms
+  int longClickDelay;    // ms
+};
+
+const static MultiButtonConfig DEFAULT_MULTIBUTTON_CONFIG = { 20, 250, 300 };
+
 /**
  * Generic button with single, double and long click detection.
  *
@@ -47,11 +55,22 @@
 class MultiButton {
   public:
     /**
-     * MultiButton constructor.
+     * MultiButton constructor with default settings for debounce/click delays.
      *
      * See class doc for usage and example.
      */
-    MultiButton() : _lastTransition(millis()), _state(StateIdle), _new(false) {
+    MultiButton()
+        : MultiButton(&DEFAULT_MULTIBUTTON_CONFIG) {
+    };
+
+    /**
+     * MultiButton constructor with custom settings for debounce/click delays.
+     *
+     * See class doc for usage and example.
+     */
+    MultiButton(const MultiButtonConfig* configuration)
+        : _lastTransition(millis()), _state(StateIdle), _new(false) {
+        _configPtr = configuration;
     };
 
     /**
@@ -147,9 +166,7 @@ class MultiButton {
     }
 
   private:
-    static const int DEBOUNCE_DELAY    =  20; // ms
-    static const int SINGLECLICK_DELAY = 250; // ms
-    static const int LONGCLICK_DELAY   = 300; // ms
+    const MultiButtonConfig* _configPtr;
 
     /**
      * Note:
@@ -236,7 +253,7 @@ class MultiButton {
       if (!pressed) {
         return StateIdle;
       }
-      if (diff >= DEBOUNCE_DELAY) {
+      if (diff >= _configPtr->debounceDecay) {
         // Still pressed after debounce delay: real 'press'
         return StatePressed;
       }
@@ -251,7 +268,7 @@ class MultiButton {
         return StateClickUp;
       }
       // If pressed, keep waiting to see if it's a long click
-      if (diff >= LONGCLICK_DELAY) {
+      if (diff >= _configPtr->longClickDelay) {
         return StateLongClick;
       }
       return StatePressed;
@@ -267,7 +284,7 @@ class MultiButton {
       if (pressed) {
         return StateDoubleClickDebounce;
       }
-      if (diff >= SINGLECLICK_DELAY) {
+      if (diff >= _configPtr->singleClickDelay) {
         return StateSingleClick;
       }
       return StateClickIdle;
@@ -283,7 +300,7 @@ class MultiButton {
       if (!pressed) {
         return StateClickIdle;
       }
-      if (diff >= DEBOUNCE_DELAY) {
+      if (diff >= _configPtr->debounceDecay) {
         return StateDoubleClick;
       }
       return StateDoubleClickDebounce;
