@@ -21,6 +21,14 @@
 
 #include <Arduino.h>
 
+struct MultiButtonConfig {
+  int debounceDecay;     // ms
+  int singleClickDelay;  // ms
+  int longClickDelay;    // ms
+};
+
+const static MultiButtonConfig DEFAULT_MULTIBUTTON_CONFIG = { 20, 250, 300 };
+
 /**
  * Generic button with single, double and long click detection.
  *
@@ -44,30 +52,27 @@
  * }
  * ```
  */
-
-struct MultiButtonConfig {
-    int debounceDecay;     // ms
-    int singleClickDelay;  // ms
-    int longClickDelay;    // ms
-};
-
-const static MultiButtonConfig DEFAULT_MULTIBUTTON_CONFIG = { 20, 250, 300 };
-
 class MultiButton {
   public:
     /**
-     * MultiButton constructor.
+     * MultiButton constructor with default settings for debounce/click delays.
      *
      * See class doc for usage and example.
      */
-    MultiButton() : _lastTransition(millis()), _state(StateIdle), _new(false) {
-        _configPtr = &DEFAULT_MULTIBUTTON_CONFIG;
+    MultiButton()
+        : MultiButton(&DEFAULT_MULTIBUTTON_CONFIG) {
     };
 
+    /**
+     * MultiButton constructor with custom settings for debounce/click delays.
+     *
+     * See class doc for usage and example.
+     */
     MultiButton(const MultiButtonConfig* configuration)
         : _lastTransition(millis()), _state(StateIdle), _new(false) {
         _configPtr = configuration;
     };
+
     /**
      * Decode hardware button state into clean clicks (single, double, long).
      * The state of isClick() etc is valid until the next call to update().

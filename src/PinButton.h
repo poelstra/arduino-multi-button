@@ -47,37 +47,52 @@ class PinButton : public MultiButton {
      * Construct a new PinButton using a switch connected between
      * an Arduino pin and ground.
      * The internal pull-up is automatically enabled.
-     * 
+     *
      * @param pin {int} Arduino pin to use
      */
-    PinButton(int pin) : MultiButton(), _pin(pin) {
-#ifdef ARDUINO_ARCH_STM32
-      pinMode(pin, (WiringPinMode)INPUT_PULLUP);
-#else
-      pinMode(pin, INPUT_PULLUP);
-#endif
+    PinButton(int pin)
+        : PinButton(pin, INPUT_PULLUP) {
     };
 
     /**
-     * Construct a new PinButton using a switch. 
-     * Initialize the input according to how the button is connected to.
-     * INPUT - a switch is conected between Arduino pin and VDD with external resistor.
-     * INPUT_PULLUP - a switch is conected between Arduino pin and ground.
-     * 
-     @param pin {int} Arduino pin to use
-     @param pinType {int} Set pin type (INPUT or INPUT_PULLUP)
+     * Construct a new PinButton using a switch.
+     * Initialize the pinType according to how the button is connected:
+     *  - INPUT: a switch is connected between Arduino pin and VDD with
+     *      external resistor.
+     *  - INPUT_PULLUP: a switch is connected between Arduino pin and ground.
+     *
+     * @param pin {int} Arduino pin to use
+     * @param pinType {int} Set pin type (INPUT or INPUT_PULLUP)
      */
-    PinButton(int pin, int pinType) : MultiButton(), _pin(pin) {
-#ifdef ARDUINO_ARCH_STM32
-      pinMode(pin, (WiringPinMode)pinType);
-#else
-      pinMode(pin, pinType);
-#endif
-      if(INPUT == pinType) {
-        _pinActiveLevel = HIGH;
-      }
+    PinButton(int pin, int pinType)
+        : PinButton(pin, pinType, &DEFAULT_MULTIBUTTON_CONFIG) {
     };
 
+    /**
+     * Construct a new PinButton using a switch connected between
+     * an Arduino pin and ground, and customized debounce/delays.
+     * The internal pull-up is automatically enabled.
+     *
+     * @param pin {int} Arduino pin to use
+     * @param configuration {const MultiButtonConfig*} Custom debounce/delay
+     *      configuration.
+     */
+    PinButton(int pin, const MultiButtonConfig* configuration)
+        : PinButton(pin, INPUT_PULLUP, configuration) {
+    };
+
+    /**
+     * Construct a new PinButton using a switch and custom configuration.
+     * Initialize the pinType according to how the button is connected:
+     *  - INPUT: a switch is connected between Arduino pin and VDD with
+     *      external resistor.
+     *  - INPUT_PULLUP: a switch is connected between Arduino pin and ground.
+     *
+     * @param pin {int} Arduino pin to use
+     * @param pinType {int} Set pin type (INPUT or INPUT_PULLUP)
+     * @param configuration {const MultiButtonConfig*} Custom debounce/delay
+     *      configuration.
+     */
     PinButton(int pin, int pinType, const MultiButtonConfig* configuration)
         : MultiButton(configuration), _pin(pin) {
 #ifdef ARDUINO_ARCH_STM32
@@ -85,7 +100,7 @@ class PinButton : public MultiButton {
 #else
       pinMode(pin, pinType);
 #endif
-      if(INPUT == pinType) {
+      if (INPUT == pinType) {
         _pinActiveLevel = HIGH;
       }
     };

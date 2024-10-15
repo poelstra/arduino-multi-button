@@ -1,10 +1,11 @@
 /**
  * Example for external dynamic configuration
  * On long click will increase long click delay with 300 ms increments until it
- * is over 3s. After that the long click delay will reset to 300ms
+ * is over 3s. After that the long click delay will reset to 300ms.
  *
- * To use this example, connect a switch between pin 2 and GND for external dynamic configuration
- *  connect a switch between pin 5 and GND for default configuration
+ * To use this example, connect a switch between pin 2 and GND for external
+ * dynamic configuration, and/or connect a switch between pin 5 and GND for
+ * default configuration.
  */
 
 #include <Arduino.h>
@@ -13,13 +14,14 @@
 #define DYNAMIC_BTN_PIN 2
 #define DEFAULT_BTN_PIN 5
 
-MultiButtonConfig buttonConfig = { 50, 200, 600 };
-PinButton configurableButton = PinButton(DYNAMIC_BTN_PIN, INPUT_PULLUP, &buttonConfig);
+MultiButtonConfig buttonConfig = {50, 200, 600};
+PinButton configurableButton = PinButton(DYNAMIC_BTN_PIN, &buttonConfig);
 PinButton defaultButton = PinButton(DEFAULT_BTN_PIN);
 
 void setup() {
     Serial.begin(57600);
-    while (!Serial) { ; }
+    while (!Serial) {
+    }
 }
 
 void loop() {
